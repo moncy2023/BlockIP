@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>国家IP拦截系统 - 本地测试</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f0f2f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .status.loading {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status.allowed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status.blocked {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .info-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .info-card h2 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .info-row {
+            display: flex;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #666;
+            width: 200px;
+        }
+
+        .info-value {
+            color: #333;
+            flex: 1;
+        }
+
+        .code-block {
+            background: #282c34;
+            color: #abb2bf;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+            margin-top: 15px;
+        }
+
+        .test-controls {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            transition: background 0.3s;
+        }
+
+        .btn:hover {
+            background: #0056b3;
+        }
+
+        .btn.danger {
+            background: #dc3545;
+        }
+
+        .btn.danger:hover {
+            background: #c82333;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .alert.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border-left: 4px solid #17a2b8;
+        }
+
+        .alert.warning {
+            background: #fff3cd;
+            color: #856404;
+            border-left: 4px solid #ffc107;
+        }
+
+        #console-log {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .log-entry {
+            margin-bottom: 5px;
+            padding: 3px 0;
+        }
+
+        .log-time {
+            color: #858585;
+        }
+
+        .log-info {
+            color: #4ec9b0;
+        }
+
+        .log-warn {
+            color: #dcdcaa;
+        }
+
+        .log-error {
+            color: #f48771;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🛡️ 国家IP拦截系统 - 本地测试页面</h1>
+            <p>此页面用于测试 country-block.js 的功能</p>
+            <div id="status" class="status loading">正在检测...</div>
+        </div>
+
+        <div class="alert info">
+            <strong>ℹ️ 说明：</strong>此测试页面会加载 country-block.js 并显示检测结果。您可以查看控制台日志了解详细的执行过程。
+        </div>
+
+        <div class="info-card">
+            <h2>检测结果</h2>
+            <div class="info-row">
+                <div class="info-label">您的国家代码：</div>
+                <div class="info-value" id="country-code">检测中...</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">访问状态：</div>
+                <div class="info-value" id="access-status">检测中...</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">数据来源：</div>
+                <div class="info-value" id="data-source">检测中...</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">缓存状态：</div>
+                <div class="info-value" id="cache-status">检测中...</div>
+            </div>
+        </div>
+
+        <div class="test-controls">
+            <h2>测试控制</h2>
+            <button class="btn" onclick="refreshTest()">🔄 重新检测</button>
+            <button class="btn" onclick="clearCache()">🗑️ 清除缓存</button>
+            <button class="btn" onclick="viewLocalStorage()">📦 查看缓存数据</button>
+            <button class="btn danger" onclick="clearConsole()">❌ 清空日志</button>
+        </div>
+
+        <div class="info-card">
+            <h2>控制台日志</h2>
+            <div id="console-log">
+                <div class="log-entry log-info">[系统] 页面加载完成，等待检测结果...</div>
+            </div>
+        </div>
+
+        <div class="alert warning">
+            <strong>⚠️ 注意：</strong>
+            <ul style="margin-top: 10px; margin-left: 20px;">
+                <li>如果您的国家在黑名单中，页面将被拦截并显示拦截页面</li>
+                <li>如果看到此页面，说明您的国家不在黑名单中或检测失败（默认允许访问）</li>
+                <li>请打开浏览器开发者工具（F12）查看原始控制台输出</li>
+            </ul>
+        </div>
+
+        <div class="info-card">
+            <h2>当前配置的黑名单国家</h2>
+            <div id="blocked-list">加载中...</div>
+        </div>
+    </div>
+
+    <script>
+        // 捕获控制台输出
+        const originalConsoleLog = console.log;
+        const originalConsoleWarn = console.warn;
+        const originalConsoleError = console.error;
+        const consoleLogDiv = document.getElementById('console-log');
+
+        function addLog(message, type = 'info') {
+            const time = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.className = `log-entry log-${type}`;
+            logEntry.innerHTML = `<span class="log-time">[${time}]</span> ${message}`;
+            consoleLogDiv.appendChild(logEntry);
+            consoleLogDiv.scrollTop = consoleLogDiv.scrollHeight;
+        }
+
+        console.log = function (...args) {
+            originalConsoleLog.apply(console, args);
+            addLog(args.join(' '), 'info');
+        };
+
+        console.warn = function (...args) {
+            originalConsoleWarn.apply(console, args);
+            addLog(args.join(' '), 'warn');
+        };
+
+        console.error = function (...args) {
+            originalConsoleError.apply(console, args);
+            addLog(args.join(' '), 'error');
+        };
+
+        // 测试控制函数
+        function refreshTest() {
+            location.reload();
+        }
+
+        function clearCache() {
+            localStorage.removeItem('visitor_country_data');
+            addLog('[测试] 缓存已清除', 'info');
+            alert('缓存已清除！点击"重新检测"以重新获取数据。');
+        }
+
+        function viewLocalStorage() {
+            const data = localStorage.getItem('visitor_country_data');
+            if (data) {
+                alert('缓存数据：\n\n' + JSON.stringify(JSON.parse(data), null, 2));
+            } else {
+                alert('没有缓存数据');
+            }
+        }
+
+        function clearConsole() {
+            consoleLogDiv.innerHTML = '<div class="log-entry log-info">[系统] 日志已清空</div>';
+        }
+
+        // 监听检测完成
+        setTimeout(() => {
+            const cached = localStorage.getItem('visitor_country_data');
+            if (cached) {
+                try {
+                    const data = JSON.parse(cached);
+                    document.getElementById('country-code').textContent = data.countryCode;
+
+                    const statusDiv = document.getElementById('status');
+                    statusDiv.textContent = '✅ 允许访问';
+                    statusDiv.className = 'status allowed';
+
+                    document.getElementById('access-status').innerHTML = '<span style="color: green;">✅ 允许</span>';
+                    document.getElementById('data-source').textContent = 'IP地理定位API';
+
+                    const cacheAge = Math.floor((Date.now() - data.timestamp) / 1000);
+                    document.getElementById('cache-status').textContent = `已缓存（${cacheAge}秒前）`;
+
+                    addLog(`[测试] 检测完成 - 国家代码: ${data.countryCode}`, 'info');
+                    addLog('[测试] 访问状态: 允许', 'info');
+                } catch (e) {
+                    addLog('[测试] 解析缓存数据失败', 'error');
+                }
+            } else {
+                document.getElementById('country-code').textContent = '未检测到';
+                document.getElementById('access-status').textContent = '未知';
+                document.getElementById('data-source').textContent = 'API调用失败或未执行';
+                document.getElementById('cache-status').textContent = '无缓存';
+
+                const statusDiv = document.getElementById('status');
+                statusDiv.textContent = '⚠️ 检测失败';
+                statusDiv.className = 'status loading';
+
+                addLog('[测试] 未能获取检测结果', 'warn');
+            }
+        }, 2000);
+
+        // 显示配置的黑名单（需要手动更新）
+        document.getElementById('blocked-list').innerHTML = `
+      <div class="code-block">
+        当前配置的黑名单国家：<br>
+        • CN - 中国<br>
+        • RU - 俄罗斯<br>
+        <br>
+        <em>（在 country-block.js 中配置）</em>
+      </div>
+    `;
+    </script>
+
+    <!-- 加载拦截脚本 -->
+    <script src="country-block.js"></script>
+</body>
+
+</html>

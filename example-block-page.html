@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>访问受限 / Access Restricted</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #333;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 600px;
+      background: white;
+      border-radius: 20px;
+      padding: 50px 40px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      text-align: center;
+      animation: slideIn 0.5s ease-out;
+    }
+    
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .icon {
+      width: 100px;
+      height: 100px;
+      margin: 0 auto 30px;
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 50px;
+      box-shadow: 0 10px 30px rgba(245, 87, 108, 0.3);
+    }
+    
+    h1 {
+      font-size: 32px;
+      margin-bottom: 20px;
+      color: #2c3e50;
+      font-weight: 700;
+    }
+    
+    .message {
+      font-size: 18px;
+      line-height: 1.8;
+      margin-bottom: 15px;
+      color: #555;
+    }
+    
+    .message:last-of-type {
+      margin-bottom: 30px;
+    }
+    
+    .country-info {
+      display: inline-block;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 25px;
+      margin-top: 20px;
+      font-size: 15px;
+      font-weight: 500;
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+    }
+    
+    .contact-info {
+      margin-top: 40px;
+      padding-top: 30px;
+      border-top: 2px solid #e8e8e8;
+      font-size: 15px;
+      color: #666;
+    }
+    
+    .contact-info a {
+      color: #667eea;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s ease;
+    }
+    
+    .contact-info a:hover {
+      color: #764ba2;
+      text-decoration: underline;
+    }
+    
+    .divider {
+      height: 3px;
+      width: 60px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      margin: 25px auto;
+      border-radius: 2px;
+    }
+    
+    .note {
+      margin-top: 30px;
+      padding: 15px;
+      background: #f8f9fa;
+      border-left: 4px solid #667eea;
+      border-radius: 8px;
+      text-align: left;
+      font-size: 14px;
+      color: #666;
+      line-height: 1.6;
+    }
+    
+    .note strong {
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="icon">🚫</div>
+    <h1>访问受限 / Access Restricted</h1>
+    <div class="divider"></div>
+    <p class="message">抱歉，我们暂时无法为您所在的地区提供服务。</p>
+    <p class="message">Sorry, we are currently unable to provide services to your region.</p>
+    <div class="country-info">
+      检测到的位置 / Detected Location: CN
+    </div>
+    
+    <div class="note">
+      <strong>说明 / Note:</strong><br>
+      这是拦截页面的示例预览。实际使用时，系统会自动检测访问者的真实位置，并根据配置的国家黑名单决定是否显示此页面。
+    </div>
+    
+    <!-- 可选：显示联系信息 -->
+    <!--
+    <div class="contact-info">
+      如有疑问，请联系 / For inquiries, please contact:<br>
+      <a href="mailto:support@example.com">support@example.com</a>
+    </div>
+    -->
+  </div>
+</body>
+</html>
